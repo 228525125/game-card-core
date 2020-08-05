@@ -1,14 +1,11 @@
 package org.cx.game.card.server;
 
-import java.util.List;
-
 import org.cx.game.action.ActionProxyHelper;
 import org.cx.game.action.IAction;
+import org.cx.game.card.action.ChangeHp;
 import org.cx.game.card.action.ChangeMana;
-import org.cx.game.card.action.ChangeStatus;
+import org.cx.game.card.action.ChangeShield;
 import org.cx.game.core.GameObject;
-import org.cx.game.tools.IListFilter;
-import org.cx.game.tools.ListUtils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -22,14 +19,21 @@ public class Character extends GameObject {
 	private String name = null;
 	private Integer hp = 0;
 	private Integer mana = 0;
-	
-	private List<Status> statuses;
+	private Integer shield = 0;
+	private Integer bout = 0;
 	
 	@JsonIgnore
 	private ChangeMana changeMana = null;
 	
 	@JsonIgnore
-	private ChangeStatus changeStatus = null;
+	private ChangeHp changeHp = null;
+	
+	@JsonIgnore
+	private ChangeShield changeShield = null;
+	
+	public void addBout() {
+		bout += 1;
+	}
 	
 	public ChangeMana getChangeMana() {
 		if(null==changeMana){
@@ -39,12 +43,20 @@ public class Character extends GameObject {
 		return changeMana;
 	}
 	
-	public ChangeStatus getChangeStatus() {
-		if(null==changeStatus){
-			changeStatus = new ChangeStatus();
-			changeStatus.setOwner(this);
+	public ChangeHp getChangeHp() {
+		if(null==changeHp){
+			changeHp = new ChangeHp();
+			changeHp.setOwner(this);
 		}
-		return changeStatus;
+		return changeHp;
+	}
+	
+	public ChangeShield getChangeShield() {
+		if(null==changeShield){
+			changeShield = new ChangeShield();
+			changeShield.setOwner(this);
+		}
+		return changeShield;
 	}
 	
 	public void changeMana(Integer newValue) {
@@ -52,31 +64,14 @@ public class Character extends GameObject {
 		action.action(newValue);
 	}
 	
-	public void changeStatus(Status status) {
-		IAction action = new ActionProxyHelper(getChangeStatus());
-		action.action(status);
+	public void changeHp(Integer newValue) {
+		IAction action = new ActionProxyHelper(getChangeHp());
+		action.action(newValue);
 	}
 	
-	public List<Status> findAllByStatusType(StatusType type) {
-		return ListUtils.filter(statuses, new IListFilter<Status>() {
-
-			@Override
-			public Boolean content(Status t) {
-				// TODO Auto-generated method stub
-				return t.getType().equals(type);
-			}
-		});
+	public void changeShield(Integer newValue) {
+		IAction action = new ActionProxyHelper(getChangeShield());
+		action.action(newValue);
 	}
 	
-	public Boolean addStatus(Status status) {
-		List<Status> list = findAllByStatusType(status.getType());
-		if(list.isEmpty())
-			return statuses.add(status);
-		else {
-			Status s = list.get(0);
-			Integer modifier = s.getModifier() + status.getModifier();
-			s.setModifier(modifier);
-			return true;
-		}
-	}
 }

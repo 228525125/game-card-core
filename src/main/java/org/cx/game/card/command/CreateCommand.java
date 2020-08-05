@@ -5,9 +5,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import org.cx.game.card.server.Host;
+import org.cx.game.card.server.Battle;
 import org.cx.game.command.Command;
 import org.cx.game.command.exception.ExecuteValidatorException;
+import org.cx.game.host.IHost;
 import org.cx.game.host.IHostManager;
 import org.cx.game.tools.Logger;
 import org.cx.game.tools.SpringUtils;
@@ -22,21 +23,25 @@ public class CreateCommand extends Command {
 		String SPACE = " ";
 		String account = parameter.toString().split(SPACE)[0];
 		String hostName = parameter.toString().split(SPACE)[1];
-		Long levelId  = new Long(parameter.toString().split(SPACE)[2]);
+		Integer nop  = new Integer(parameter.toString().split(SPACE)[2]);
 		
 		IHostManager hm = SpringUtils.getBean("hostManager");
-		Host host = (Host) hm.createHost(hostName, account, levelId);
+		IHost host = hm.createHost(hostName, account, nop);
 		Integer troop = host.getTroopForAccount(account);
 		
-		Logger.debug("CreateCommand PlayNo: {}", hm.getPlayNoByAccount(account));
+		Logger.debug("CreateCommand PlayNo: {}", hm.getPlayNoByCreator(account));
 		
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("playNo", host.getPlayNo());
 		map.put("troop", troop);
 		map.put("sequence", 0);
-		map.put("firstHand", host.getFirstHand()==troop);
 		map.put("hostStatus", host.getStatus());
 		map.put("account", account);
+		if("play".equals(hostName)) {
+			Battle battle = (Battle) host;
+			map.put("firstHand", battle.getFirstHand()==troop);
+		}
+		
 		return map;
 	}
 	

@@ -6,7 +6,7 @@ import java.util.Map;
 import org.cx.game.action.AbstractAction;
 import org.cx.game.action.IAction;
 import org.cx.game.card.server.Character;
-import org.cx.game.card.server.Host;
+import org.cx.game.card.server.Battle;
 import org.cx.game.card.server.Status;
 import org.cx.game.observer.Result;
 import org.cx.game.tools.CommonIdentifier;
@@ -26,8 +26,8 @@ public class GameOver extends AbstractAction implements IAction {
 	}
 	
 	@Override
-	public Host getOwner() {
+	public Battle getOwner() {
 		// TODO Auto-generated method stub
-		return (Host) super.getOwner();
+		return (Battle) super.getOwner();
 	}
 }

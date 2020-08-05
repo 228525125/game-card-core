@@ -5,26 +5,28 @@ import java.util.Map;
 
 import org.cx.game.action.AbstractAction;
 import org.cx.game.action.IAction;
-import org.cx.game.card.server.Card;
-import org.cx.game.card.server.Battle;
 import org.cx.game.observer.Result;
 import org.cx.game.tools.CommonIdentifier;
 
-public class GameStart extends AbstractAction implements IAction {
+public class ChangeHp extends AbstractAction implements IAction {
 
-	@Override
 	public void action(Object... objects) {
 		// TODO Auto-generated method stub
+		Integer hp = (Integer) objects[0];
+		getOwner().setHp(hp);
+		
 		Map<String,Object> map = new HashMap<String,Object>();
-		String desc = "【游戏开始】";
+		map.put("character", getOwner());
+		map.put("hp", hp);
+		String desc = "玩家"+getOwner().getName()+"HP 【改变】 ；";
 		map.put("description", desc);
-		Result info = new Result(CommonIdentifier.Game_Start,map);
+		Result info = new Result(CommonIdentifier.Character_Change_Hp,map);
 		super.notifyObservers(info);
 	}
 	
 	@Override
-	public Battle getOwner() {
+	public org.cx.game.card.server.Character getOwner() {
 		// TODO Auto-generated method stub
-		return (Battle) super.getOwner();
+		return (org.cx.game.card.server.Character) super.getOwner();
 	}
 }

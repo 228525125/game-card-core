@@ -5,7 +5,7 @@ import java.util.Map;
 
 import org.cx.game.action.AbstractAction;
 import org.cx.game.action.IAction;
-import org.cx.game.card.server.Host;
+import org.cx.game.card.server.Battle;
 import org.cx.game.observer.Result;
 import org.cx.game.tools.CommonIdentifier;
 
@@ -15,6 +15,7 @@ public class TurnStart extends AbstractAction implements IAction {
 	public void action(Object... objects) {
 		// TODO Auto-generated method stub
 		org.cx.game.card.server.Character controller = (org.cx.game.card.server.Character) objects[0];
+		controller.addBout();
 		
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("character", controller);
@@ -25,8 +26,8 @@ public class TurnStart extends AbstractAction implements IAction {
 	}
 	
 	@Override
-	public Host getOwner() {
+	public Battle getOwner() {
 		// TODO Auto-generated method stub
-		return (Host) super.getOwner();
+		return (Battle) super.getOwner();
 	}
 }

@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.cx.game.command.CommandBuffer;
 import org.cx.game.core.GameObject;
+import org.cx.game.host.IHost;
 import org.cx.game.host.IPlayer;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -21,10 +22,10 @@ public class Player extends GameObject implements IPlayer {
 	private Integer troop = null;
 	private String name = null;
 	
-	public Player(Integer troop, String name, Host host) {
+	public Player(Integer troop, String account, IHost host) {
 		// TODO Auto-generated constructor stub
 		this.troop = troop;
-		this.name = name;
+		this.name = account;
 		setHost(host);
 	}
 	

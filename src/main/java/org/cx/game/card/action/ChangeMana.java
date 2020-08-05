@@ -19,6 +19,7 @@ public class ChangeMana extends AbstractAction implements IAction {
 		
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("character", getOwner());
+		map.put("mana", mana);
 		String desc = "玩家"+getOwner().getName()+"Mana 【改变】 ；";
 		map.put("description", desc);
 		Result info = new Result(CommonIdentifier.Character_Change_Mana,map);
