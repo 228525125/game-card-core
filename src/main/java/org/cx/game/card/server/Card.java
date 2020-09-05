@@ -23,6 +23,7 @@ public class Card extends GameObject {
 	private String policy;
 	private Integer location;
 	private Integer character;
+	private Boolean real;
 	
 	@JsonIgnore
 	private Play play = null;
