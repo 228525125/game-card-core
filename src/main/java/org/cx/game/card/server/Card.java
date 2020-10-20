@@ -14,7 +14,6 @@ import lombok.ToString;
 
 @Getter
 @Setter
-@ToString(exclude="play")
 public class Card extends GameObject {
 
 	private Integer id;
@@ -25,35 +24,18 @@ public class Card extends GameObject {
 	private Integer character;
 	private Boolean real;
 	
-	@JsonIgnore
-	private Play play = null;
-	
-	@JsonIgnore
-	private Draw draw = null;
-	
-	public void play(Character target) {
-		IAction action = new ActionProxyHelper(getPlay());
-		action.action(target);
-	}
-	
-	public void draw() {
-		IAction action = new ActionProxyHelper(getDraw());
-		action.action();
-	}
-	
-	public Play getPlay() {
-		if(null==play){
-			play = new Play();
-			play.setOwner(this);
+	public static void main(String[] args) {
+		String str = "org.cx.game.card.server.Card";
+		Class clz;
+		try {
+			clz = Class.forName(str);
+			if(GameObject.class.isAssignableFrom(clz)) {
+				System.out.println("shi");
+			}
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		return play;
-	}
-	
-	public Draw getDraw() {
-		if(null==draw) {
-			draw = new Draw();
-			draw.setOwner(this);
-		}
-		return draw;
+		
 	}
 }

@@ -1,16 +1,23 @@
 package org.cx.game.card.server;
 
+import java.util.List;
+
 import org.cx.game.action.ActionProxyHelper;
 import org.cx.game.action.IAction;
 import org.cx.game.card.action.CharacterCreated;
+import org.cx.game.card.action.DeckCreated;
 import org.cx.game.card.action.GameOver;
 import org.cx.game.card.action.GameStart;
 import org.cx.game.card.action.TurnEnd;
 import org.cx.game.card.action.TurnStart;
+import org.cx.game.core.GameObject;
 import org.cx.game.host.Host;
 import org.cx.game.host.IPlayer;
+import org.cx.game.tools.JsonHelper;
+import org.cx.game.tools.SpringUtils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.core.type.TypeReference;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -36,6 +43,9 @@ public class Battle extends Host {
 	
 	@JsonIgnore
 	private CharacterCreated characterCreated = null;
+	
+	@JsonIgnore
+	private DeckCreated deckCreated = null;
 
 	public Battle(String name, String playNo, String creator, Integer nop) {
 		// TODO Auto-generated constructor stub
@@ -85,6 +95,16 @@ public class Battle extends Host {
 		return characterCreated;
 	}
 	
+	
+	
+	public DeckCreated getDeckCreated() {
+		if(null==deckCreated) {
+			deckCreated = new DeckCreated();
+			deckCreated.setOwner(this);
+		}
+		return deckCreated;
+	}
+	
 	public void turnStart(Character character) {
 		IAction action = new ActionProxyHelper(getTurnStart());
 		action.action(character);
@@ -122,6 +142,24 @@ public class Battle extends Host {
 			IAction action = new ActionProxyHelper(getCharacterCreated());
 			action.action();
 		}
+	}
+	
+	public void deckCreated(Integer troop) {
+		getTroopStatusMap().put(troop, Status_DeckCreated);
+		if(isStatus(Status_DeckCreated)) {
+			setStatus(Status_DeckCreated);
+			IAction action = new ActionProxyHelper(getDeckCreated());
+			action.action();
+		}
+	}
+	
+	public List<Card> batchCreate(String json){
+		JsonHelper helper = SpringUtils.getBean("jsonHelper");
+		List<Card> list = helper.parseObject(json, new TypeReference<List<Card>>() {});
+		for(Card card : list) 
+			getGameObjects().put(card.getPid(), card);
+		
+		return list;
 	}
 
 }

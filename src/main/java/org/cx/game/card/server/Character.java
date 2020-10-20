@@ -1,10 +1,15 @@
 package org.cx.game.card.server;
 
+import java.util.List;
+
 import org.cx.game.action.ActionProxyHelper;
 import org.cx.game.action.IAction;
 import org.cx.game.card.action.ChangeHp;
 import org.cx.game.card.action.ChangeMana;
 import org.cx.game.card.action.ChangeShield;
+import org.cx.game.card.action.Discard;
+import org.cx.game.card.action.Draw;
+import org.cx.game.card.action.Play;
 import org.cx.game.core.GameObject;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -30,6 +35,15 @@ public class Character extends GameObject {
 	
 	@JsonIgnore
 	private ChangeShield changeShield = null;
+	
+	@JsonIgnore
+	private Play play = null;
+	
+	@JsonIgnore
+	private Draw draw = null;
+	
+	@JsonIgnore
+	private Discard discard = null;
 	
 	public void addBout() {
 		bout += 1;
@@ -59,6 +73,30 @@ public class Character extends GameObject {
 		return changeShield;
 	}
 	
+	public Play getPlay() {
+		if(null==play){
+			play = new Play();
+			play.setOwner(this);
+		}
+		return play;
+	}
+	
+	public Draw getDraw() {
+		if(null==draw) {
+			draw = new Draw();
+			draw.setOwner(this);
+		}
+		return draw;
+	}
+	
+	public Discard getDiscard() {
+		if(null==discard) {
+			discard = new Discard();
+			discard.setOwner(this);
+		}
+		return discard;
+	}
+	
 	public void changeMana(Integer newValue) {
 		IAction action = new ActionProxyHelper(getChangeMana());
 		action.action(newValue);
@@ -72,6 +110,21 @@ public class Character extends GameObject {
 	public void changeShield(Integer newValue) {
 		IAction action = new ActionProxyHelper(getChangeShield());
 		action.action(newValue);
+	}
+	
+	public void play(Card card, Character target) {
+		IAction action = new ActionProxyHelper(getPlay());
+		action.action(card, target);
+	}
+	
+	public void draw(List<Card> cards) {
+		IAction action = new ActionProxyHelper(getDraw());
+		action.action(cards);
+	}
+	
+	public void discard(List<Card> cards) {
+		IAction action = new ActionProxyHelper(getDiscard());
+		action.action(cards);
 	}
 	
 }
