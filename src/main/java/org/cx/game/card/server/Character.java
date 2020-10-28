@@ -1,5 +1,6 @@
 package org.cx.game.card.server;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.cx.game.action.ActionProxyHelper;
@@ -7,6 +8,7 @@ import org.cx.game.action.IAction;
 import org.cx.game.card.action.ChangeHp;
 import org.cx.game.card.action.ChangeMana;
 import org.cx.game.card.action.ChangeShield;
+import org.cx.game.card.action.Conjure;
 import org.cx.game.card.action.Discard;
 import org.cx.game.card.action.Draw;
 import org.cx.game.card.action.Play;
@@ -44,6 +46,9 @@ public class Character extends GameObject {
 	
 	@JsonIgnore
 	private Discard discard = null;
+	
+	@JsonIgnore
+	private Conjure conjure = null;
 	
 	public void addBout() {
 		bout += 1;
@@ -97,6 +102,14 @@ public class Character extends GameObject {
 		return discard;
 	}
 	
+	public Conjure getConjure() {
+		if(null==conjure) {
+			conjure = new Conjure();
+			conjure.setOwner(this);
+		}
+		return conjure;
+	}
+	
 	public void changeMana(Integer newValue) {
 		IAction action = new ActionProxyHelper(getChangeMana());
 		action.action(newValue);
@@ -125,6 +138,11 @@ public class Character extends GameObject {
 	public void discard(List<Card> cards) {
 		IAction action = new ActionProxyHelper(getDiscard());
 		action.action(cards);
+	}
+	
+	public void conjure(Skill skill, Character target) {
+		IAction action = new ActionProxyHelper(getConjure());
+		action.action(skill, target);
 	}
 	
 }

@@ -8,6 +8,7 @@ import org.cx.game.card.action.CharacterCreated;
 import org.cx.game.card.action.DeckCreated;
 import org.cx.game.card.action.GameOver;
 import org.cx.game.card.action.GameStart;
+import org.cx.game.card.action.SkillsCreated;
 import org.cx.game.card.action.TurnEnd;
 import org.cx.game.card.action.TurnStart;
 import org.cx.game.core.GameObject;
@@ -26,6 +27,9 @@ import lombok.Setter;
 @Setter
 public class Battle extends Host {
 
+	public final static Integer Status_DeckCreated = 5;
+	public final static Integer Status_SkillsCreated = 6;
+	
 	private Integer firstHand = 0;
 	private EnemyType enemyType = null;
 
@@ -46,6 +50,9 @@ public class Battle extends Host {
 	
 	@JsonIgnore
 	private DeckCreated deckCreated = null;
+	
+	@JsonIgnore
+	private SkillsCreated skillsCreated = null;
 
 	public Battle(String name, String playNo, String creator, Integer nop) {
 		// TODO Auto-generated constructor stub
@@ -105,6 +112,14 @@ public class Battle extends Host {
 		return deckCreated;
 	}
 	
+	public SkillsCreated getSkillsCreated() {
+		if(null==skillsCreated) {
+			skillsCreated = new SkillsCreated();
+			skillsCreated.setOwner(this);
+		}
+		return skillsCreated;
+	}
+	
 	public void turnStart(Character character) {
 		IAction action = new ActionProxyHelper(getTurnStart());
 		action.action(character);
@@ -149,6 +164,15 @@ public class Battle extends Host {
 		if(isStatus(Status_DeckCreated)) {
 			setStatus(Status_DeckCreated);
 			IAction action = new ActionProxyHelper(getDeckCreated());
+			action.action();
+		}
+	}
+	
+	public void skillCreated(Integer troop) {
+		getTroopStatusMap().put(troop, Status_SkillsCreated);
+		if(isStatus(Status_SkillsCreated)) {
+			setStatus(Status_SkillsCreated);
+			IAction action = new ActionProxyHelper(getSkillsCreated());
 			action.action();
 		}
 	}
