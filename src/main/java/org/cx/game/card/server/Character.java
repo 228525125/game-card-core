@@ -1,12 +1,15 @@
 package org.cx.game.card.server;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.cx.game.action.ActionProxyHelper;
 import org.cx.game.action.IAction;
 import org.cx.game.card.action.ChangeHp;
 import org.cx.game.card.action.ChangeMana;
+import org.cx.game.card.action.ChangePower;
 import org.cx.game.card.action.ChangeShield;
 import org.cx.game.card.action.Conjure;
 import org.cx.game.card.action.Discard;
@@ -28,9 +31,13 @@ public class Character extends GameObject {
 	private Integer mana = 0;
 	private Integer shield = 0;
 	private Integer bout = 0;
+	private Map<PowerType, Integer> powers;
 	
 	@JsonIgnore
 	private ChangeMana changeMana = null;
+	
+	@JsonIgnore
+	private ChangePower changePower = null; 
 	
 	@JsonIgnore
 	private ChangeHp changeHp = null;
@@ -60,6 +67,14 @@ public class Character extends GameObject {
 			changeMana.setOwner(this);
 		}
 		return changeMana;
+	}
+	
+	public ChangePower getChangePower() {
+		if(null==changePower){
+			changePower = new ChangePower();
+			changePower.setOwner(this);
+		}
+		return changePower;
 	}
 	
 	public ChangeHp getChangeHp() {
@@ -113,6 +128,11 @@ public class Character extends GameObject {
 	public void changeMana(Integer newValue) {
 		IAction action = new ActionProxyHelper(getChangeMana());
 		action.action(newValue);
+	}
+	
+	public void changePower(PowerType type, Integer newValue) {
+		IAction action = new ActionProxyHelper(getChangePower());
+		action.action(type, newValue);
 	}
 	
 	public void changeHp(Integer newValue) {
